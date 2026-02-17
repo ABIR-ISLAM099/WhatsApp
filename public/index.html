@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>IMRAN-MD — Session Linker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --g:#25D366;--g2:#00e676;--cy:#00e5ff;
+      --bg:#060906;--c1:#0d130d;--c2:#0a0f0a;
+      --bd:#172517;--tx:#d4e8d4;--mu:#3d5c42;
+    }
+    body{
+      font-family:'Inter',sans-serif;
+      background:var(--bg);color:var(--tx);
+      min-height:100vh;
+      display:flex;flex-direction:column;align-items:center;
+      padding:28px 16px 64px;
+      background-image:
+        radial-gradient(ellipse 70% 50% at 15% 10%,rgba(37,211,102,.07) 0%,transparent 60%),
+        radial-gradient(ellipse 50% 60% at 85% 90%,rgba(0,229,118,.05) 0%,transparent 60%);
+    }
+
+    /* TOPBAR */
+    .bar{width:100%;max-width:460px;display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+    .bar-l{display:flex;align-items:center;gap:11px}
+    .logo{width:44px;height:44px;background:linear-gradient(135deg,#142414,#0a150a);border:1.5px solid var(--g);border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 0 18px rgba(37,211,102,.2)}
+    .brand{font-size:18px;font-weight:900;background:linear-gradient(90deg,var(--g),var(--cy));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .online{font-size:10px;font-weight:700;color:var(--g);background:rgba(37,211,102,.1);border:1px solid rgba(37,211,102,.22);padding:5px 13px;border-radius:20px;letter-spacing:1.2px}
+
+    /* CARD */
+    .card{background:var(--c1);border:1px solid var(--bd);border-radius:24px;padding:30px 26px;width:100%;max-width:460px;box-shadow:0 0 60px rgba(37,211,102,.05),0 28px 72px rgba(0,0,0,.7);position:relative;overflow:hidden;margin-bottom:14px}
+    .card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--g),var(--cy),var(--g2),transparent)}
+
+    /* HERO */
+    .hero{text-align:center;margin-bottom:26px}
+    .hero-ic{width:70px;height:70px;background:linear-gradient(135deg,#142414,#0d1f0d);border:2px solid var(--g);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:34px;box-shadow:0 0 28px rgba(37,211,102,.25);margin:0 auto 14px}
+    .hero-t{font-size:20px;font-weight:900;background:linear-gradient(90deg,var(--g),var(--cy));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:5px}
+    .hero-s{font-size:12px;color:var(--mu)}
+
+    .line{height:1px;background:linear-gradient(90deg,transparent,var(--bd),transparent);margin:22px 0}
+
+    /* LABEL */
+    .lbl{font-size:11px;color:var(--mu);margin-bottom:8px;letter-spacing:1.8px;text-transform:uppercase;font-weight:700}
+
+    /* INPUT */
+    .iw{position:relative;margin-bottom:15px}
+    .iw em{position:absolute;left:15px;top:50%;transform:translateY(-50%);font-size:18px;font-style:normal}
+    input{width:100%;padding:16px 16px 16px 47px;background:var(--c2);border:1.5px solid var(--bd);border-radius:14px;color:var(--tx);font-size:16px;font-family:'JetBrains Mono',monospace;outline:none;transition:border-color .2s,box-shadow .2s;letter-spacing:1px}
+    input:focus{border-color:var(--g);box-shadow:0 0 0 3px rgba(37,211,102,.1)}
+    input::placeholder{color:#1c2e1c;font-size:13px;letter-spacing:0;font-family:'Inter',sans-serif}
+
+    /* BUTTON */
+    .btn{width:100%;padding:17px;background:linear-gradient(135deg,#1b5c34,var(--g));border:none;border-radius:14px;color:#fff;font-size:16px;font-weight:800;cursor:pointer;transition:all .22s;display:flex;align-items:center;justify-content:center;gap:9px}
+    .btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 12px 32px rgba(37,211,102,.4)}
+    .btn:active:not(:disabled){transform:none}
+    .btn:disabled{opacity:.35;cursor:not-allowed;transform:none}
+
+    /* CODE RESULT */
+    .rbox{background:var(--c2);border:1.5px solid var(--bd);border-radius:16px;padding:28px;text-align:center;margin-top:18px;display:none;flex-direction:column;align-items:center;gap:8px}
+    .rbox.show{display:flex}
+    .code-val{font-family:'JetBrains Mono',monospace;font-size:38px;font-weight:800;color:var(--cy);letter-spacing:8px;text-shadow:0 0 32px rgba(0,229,255,.3)}
+    .code-sub{font-size:11px;color:var(--mu);margin-top:2px;line-height:1.6}
+    .copy-btn{margin-top:12px;padding:12px 26px;background:transparent;border:1.5px solid var(--bd);border-radius:12px;color:var(--tx);font-size:14px;font-weight:600;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px}
+    .copy-btn:hover{border-color:var(--g);color:var(--g)}
+
+    /* STATUS */
+    .st{margin-top:16px;padding:13px 16px;border-radius:13px;font-size:13px;font-weight:600;display:none;align-items:center;gap:9px;line-height:1.55}
+    .st.show{display:flex}
+    .st.ld{background:rgba(255,170,0,.07);border:1px solid rgba(255,170,0,.2);color:#ffaa00}
+    .st.ok{background:rgba(37,211,102,.07);border:1px solid rgba(37,211,102,.2);color:var(--g)}
+    .st.er{background:rgba(255,60,60,.07);border:1px solid rgba(255,60,60,.2);color:#ff4444}
+    .st.fo{background:rgba(0,229,255,.05);border:1px solid rgba(0,229,255,.15);color:var(--cy)}
+    .dots{display:inline-flex;gap:3px}
+    .dots b{width:5px;height:5px;background:currentColor;border-radius:50%;animation:db 1.2s infinite;display:block}
+    .dots b:nth-child(2){animation-delay:.2s}.dots b:nth-child(3){animation-delay:.4s}
+    @keyframes db{0%,80%,100%{transform:scale(.45);opacity:.25}40%{transform:scale(1);opacity:1}}
+
+    /* STEPS */
+    .steps{margin-top:24px;padding-top:20px;border-top:1px solid var(--bd)}
+    .stit{font-size:10px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:14px}
+    .step{display:flex;align-items:flex-start;gap:11px;margin-bottom:11px;font-size:13px;color:#4a6a50;line-height:1.65}
+    .sn{width:22px;min-width:22px;height:22px;background:#111d11;border:1px solid #1d301d;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:var(--g);margin-top:2px}
+    .step strong{color:var(--g)}
+
+    /* CONTACT */
+    .cc{background:var(--c1);border:1px solid var(--bd);border-radius:24px;padding:24px 26px;width:100%;max-width:460px;box-shadow:0 12px 40px rgba(0,0,0,.5);margin-bottom:14px}
+    .cc-t{font-size:10px;color:var(--mu);letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:14px}
+    .links{display:flex;flex-direction:column;gap:9px}
+    .lk{display:flex;align-items:center;gap:13px;padding:14px 15px;background:var(--c2);border:1px solid var(--bd);border-radius:13px;text-decoration:none;color:var(--tx);transition:all .2s}
+    .lk:hover{border-color:var(--g);color:var(--g);transform:translateX(4px);background:#0d160d}
+    .lk-ic{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+    .lk-n{font-size:13px;font-weight:700;margin-bottom:2px}
+    .lk-s{font-size:11px;color:var(--mu)}
+    .arr{margin-left:auto;color:var(--mu);font-size:18px}
+
+    .foot{font-size:11px;color:#162016;text-align:center}
+    .foot span{color:var(--g)}
+  </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="bar">
+  <div class="bar-l">
+    <div class="logo">🤖</div>
+    <div class="brand">IMRAN-MD</div>
+  </div>
+  <div class="online">🟢 ONLINE</div>
+</div>
+
+<!-- MAIN CARD -->
+<div class="card">
+
+  <div class="hero">
+    <div class="hero-ic">🔑</div>
+    <div class="hero-t">WhatsApp Session Linker</div>
+    <div class="hero-s">Generate your session to run IMRAN-MD bot</div>
+  </div>
+
+  <div class="line"></div>
+
+  <div class="lbl">Your WhatsApp Number</div>
+  <div class="iw">
+    <em>📱</em>
+    <input id="num" type="text" placeholder="8801XXXXXXXXX" maxlength="15"
+           oninput="this.value=this.value.replace(/[^0-9]/g,'')"
+           onkeydown="if(event.key==='Enter')gen()"/>
+  </div>
+
+  <button class="btn" id="btnGen" onclick="gen()">
+    🔑 Generate Pair Code
+  </button>
+
+  <!-- CODE RESULT -->
+  <div class="rbox" id="rbox">
+    <div style="font-size:11px;color:var(--mu);letter-spacing:1px;text-transform:uppercase;font-weight:700">Your Pair Code</div>
+    <div class="code-val" id="codeVal"></div>
+    <div class="code-sub">
+      Open WhatsApp → <strong style="color:var(--g)">Linked Devices</strong><br/>
+      → <strong style="color:var(--g)">Link with Phone Number</strong> → Enter this code
+    </div>
+    <button class="copy-btn" id="btnCopy" onclick="cp()">📋 Copy Code</button>
+  </div>
+
+  <!-- STATUS -->
+  <div class="st" id="stBox">
+    <div class="dots"><b></b><b></b><b></b></div>
+    <span id="stTxt"></span>
+  </div>
+
+  <!-- STEPS -->
+  <div class="steps">
+    <div class="stit">How to use</div>
+    <div class="step">
+      <div class="sn">1</div>
+      <span>Enter your WhatsApp number with country code<br/><strong>e.g. 8801XXXXXXXXX</strong></span>
+    </div>
+    <div class="step">
+      <div class="sn">2</div>
+      <span>Click <strong>Generate Pair Code</strong> and wait a moment</span>
+    </div>
+    <div class="step">
+      <div class="sn">3</div>
+      <span>Open WhatsApp → <strong>Linked Devices</strong> → <strong>Link with Phone Number</strong></span>
+    </div>
+    <div class="step">
+      <div class="sn">4</div>
+      <span>Enter the code — your <strong>Session ID</strong> will be sent to your WhatsApp 🎉</span>
+    </div>
+    <div class="step">
+      <div class="sn">5</div>
+      <span>Copy the <strong>IMRAN-MD;;;...</strong> message and use it as your bot session</span>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div class="cc">
+  <div class="cc-t">📞 Contact & Support</div>
+  <div class="links">
+    <a class="lk" href="https://wa.me/+8801689903267" target="_blank">
+      <div class="lk-ic" style="background:rgba(37,211,102,.12)">💬</div>
+      <div><div class="lk-n">WhatsApp</div><div class="lk-s">+880 1689-903267</div></div>
+      <div class="arr">›</div>
+    </a>
+    <a class="lk" href="https://facebook.com/Imran.Ahmed099" target="_blank">
+      <div class="lk-ic" style="background:rgba(24,119,242,.12)">📘</div>
+      <div><div class="lk-n">Facebook</div><div class="lk-s">fb.com/Imran.Ahmed099</div></div>
+      <div class="arr">›</div>
+    </a>
+    <a class="lk" href="https://youtube.com/@YOUR_CHANNEL" target="_blank">
+      <div class="lk-ic" style="background:rgba(255,0,0,.1)">▶️</div>
+      <div><div class="lk-n">YouTube</div><div class="lk-s">Tutorials & Updates</div></div>
+      <div class="arr">›</div>
+    </a>
+    <a class="lk" href="https://github.com/YOUR_USERNAME" target="_blank">
+      <div class="lk-ic" style="background:rgba(255,255,255,.05)">🐙</div>
+      <div><div class="lk-n">GitHub</div><div class="lk-s">Source Code</div></div>
+      <div class="arr">›</div>
+    </a>
+  </div>
+</div>
+
+<div class="foot">© 2025 <span>IMRAN-MD</span> — Session Linker</div>
+
+<script>
+  let curCode = '';
+
+  function setSt(type, msg) {
+    const b = document.getElementById('stBox');
+    const t = document.getElementById('stTxt');
+    b.className = 'st show ' + type;
+    t.textContent = msg;
+    const d = b.querySelector('.dots');
+    if (d) d.style.display = type === 'ld' ? 'inline-flex' : 'none';
+  }
+
+  async function gen() {
+    const num = document.getElementById('num').value.replace(/[^0-9]/g, '');
+    if (!num || num.length < 7) {
+      setSt('er', '❌ Enter a valid WhatsApp number');
+      return;
+    }
+
+    const btn = document.getElementById('btnGen');
+    btn.disabled = true;
+    btn.innerHTML = '⏳ Connecting...';
+    document.getElementById('rbox').classList.remove('show');
+    curCode = '';
+    setSt('ld', 'Connecting to WhatsApp...');
+
+    try {
+      const r    = await fetch('/code?number=' + num);
+      const data = await r.json();
+
+      if (data.code && data.code !== 'Service Unavailable') {
+        curCode = data.code;
+        document.getElementById('codeVal').textContent = data.code;
+        document.getElementById('rbox').classList.add('show');
+        setSt('fo', 'ℹ️ Enter the code in WhatsApp. Session ID will be sent automatically!');
+      } else {
+        setSt('er', '❌ ' + (data.code || data.error || 'Failed. Try again.'));
+      }
+    } catch {
+      setSt('er', '❌ Server error. Try again.');
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = '🔑 Generate Pair Code';
+  }
+
+  function cp() {
+    if (!curCode) return;
+    navigator.clipboard.writeText(curCode).then(() => {
+      const b = document.getElementById('btnCopy');
+      b.textContent = '✅ Copied!';
+      setTimeout(() => { b.innerHTML = '📋 Copy Code'; }, 2000);
+    });
+  }
+</script>
+</body>
+  </html>
